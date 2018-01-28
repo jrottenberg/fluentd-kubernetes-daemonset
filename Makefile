@@ -313,6 +313,7 @@ post-push-hook-all:
         dockerfile dockerfile-all \
         entrypoint.sh entrypoint.sh-all \
         fluent.conf fluent.conf-all \
-        kubernetes.conf kubernetes.conf-all\
+        kubernetes.conf kubernetes.conf-all \
+        systemd.conf systemd.conf-all \
         plugins plugins-all \
         post-push-hook post-push-hook-all
