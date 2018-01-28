@@ -12,19 +12,19 @@
 
 IMAGE_NAME := fluent/fluentd-kubernetes
 ALL_IMAGES := \
-	v0.12/alpine-elasticsearch:v0.12.33-elasticsearch,v0.12-elasticsearch,stable-elasticsearch,elasticsearch \
-	v0.12/alpine-loggly:v0.12.33-loggly,v0.12-loggly,stable-loggly,loggly \
-	v0.12/alpine-logentries:v0.12.33-logentries,v0.12-logentries,stable-logentries,logentries \
-	v0.12/alpine-cloudwatch:v0.12.33-cloudwatch,v0.12-cloudwatch,stable-cloudwatch,cloudwatch \
-	v0.12/alpine-s3:v0.12.33-s3,v0.12-s3,stable-s3,s3 \
-	v0.12/alpine-papertrail:v0.12.33-papertrail,v0.12-papertrail,stable-papertrail,papertrail \
-	v0.12/debian-elasticsearch:v0.12.33-debian-elasticsearch,v0.12-debian-elasticsearch,debian-elasticsearch \
-	v0.12/debian-loggly:v0.12.33-debian-loggly,v0.12-debian-loggly,debian-loggly \
-	v0.12/debian-logentries:v0.12.33-debian-logentries,v0.12-debian-logentries,debian-logentries \
-	v0.12/debian-cloudwatch:v0.12.33-debian-cloudwatch,v0.12-debian-cloudwatch,debian-cloudwatch \
-	v0.12/debian-stackdriver:v0.12.33-debian-stackdriver,v0.12-debian-stackdriver,debian-stackdriver \
-	v0.12/debian-s3:v0.12.33-debian-s3,v0.12-debian-s3,debian-s3 \
-	v0.12/debian-papertrail:v0.12.33-debian-papertrail,v0.12-debian-papertrail,debian-papertrail
+	v1.1/alpine-elasticsearch:v1.1.0-elasticsearch,v1.1-elasticsearch,stable-elasticsearch,elasticsearch \
+	v1.1/alpine-loggly:v1.1.0-loggly,v1.1-loggly,stable-loggly,loggly \
+	v1.1/alpine-logentries:v1.1.0-logentries,v1.1-logentries,stable-logentries,logentries \
+	v1.1/alpine-cloudwatch:v1.1.0-cloudwatch,v1.1-cloudwatch,stable-cloudwatch,cloudwatch \
+	v1.1/alpine-s3:v1.1.0-s3,v1.1-s3,stable-s3,s3 \
+	v1.1/alpine-papertrail:v1.1.0-papertrail,v1.1-papertrail,stable-papertrail,papertrail \
+	v1.1/debian-elasticsearch:v1.1.0-debian-elasticsearch,v1.1-debian-elasticsearch,debian-elasticsearch \
+	v1.1/debian-loggly:v1.1.0-debian-loggly,v1.1-debian-loggly,debian-loggly \
+	v1.1/debian-logentries:v1.1.0-debian-logentries,v1.1-debian-logentries,debian-logentries \
+	v1.1/debian-cloudwatch:v1.1.0-debian-cloudwatch,v1.1-debian-cloudwatch,debian-cloudwatch \
+	v1.1/debian-stackdriver:v1.1.0-debian-stackdriver,v1.1-debian-stackdriver,debian-stackdriver \
+	v1.1/debian-s3:v1.1.0-debian-s3,v1.1-debian-s3,debian-s3 \
+	v1.1/debian-papertrail:v1.1.0-debian-papertrail,v1.1-debian-papertrail,debian-papertrail
 
 #	<Dockerfile>:<version>,<tag1>,<tag2>,...
 
@@ -265,6 +265,19 @@ fluent.conf-all:
 kubernetes.conf-all:
 	(set -e ; $(foreach img,$(ALL_IMAGES), \
 		make kubernetes.conf \
+			DOCKERFILE=$(word 1,$(subst :, ,$(img))) \
+			VERSION=$(word 1,$(subst $(comma), ,\
+			                 $(word 2,$(subst :, ,$(img))))) ; \
+	))
+
+# Generate systemd.conf from template for all supported Docker images.
+#
+# Usage:
+#	make systemd.conf-all
+
+systemd.conf-all:
+	(set -e ; $(foreach img,$(ALL_IMAGES), \
+		make systemd.conf \
 			DOCKERFILE=$(word 1,$(subst :, ,$(img))) \
 			VERSION=$(word 1,$(subst $(comma), ,\
 			                 $(word 2,$(subst :, ,$(img))))) ; \
